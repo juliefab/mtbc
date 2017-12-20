@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Canvas Intro</title>
+  </head>
+  <body>
+  <canvas id="canvas" height="400px" width="600px;" style="border: 1px solid #000;">
+
+
+
+  </canvas>
+
+  <script>
+
+  //Plot a random x
+  var x = Math.random() * 500;
+
+  //Plot a random y
+  var y = Math.random() * 300;
+
+  var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#' + Math.floor(Math.random()*16777215).toString(16);
+     ctx.fillRect(x, y, 100, 100);
+
+     ctx.beginPath();
+     ctx.strokeStyle = '#' + Math.floor(Math.random()*16777215).toString(16);
+     ctx.arc(230, 200, 83, 0, 2 * Math.PI);
+     ctx.stroke();
+
+
+  </script>
+  </body>
+</html>
