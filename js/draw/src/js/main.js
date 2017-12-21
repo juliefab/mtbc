@@ -1,3 +1,4 @@
+
 var draw = (function() {
 
   //Get the height and width of the main we will use this set canvas to the full
@@ -26,13 +27,42 @@ var draw = (function() {
     x2=0,
     y2=0,
 
+    lx = 0,
+    ly = 0,
+
+
     // what shape are we drawing
     shape='';
 
+
+    // have we started drawing yet
+    isDrawing=false;
+
   return {
 
+      setIsDrawing: function(bool){
+        isDrawing = bool;
+      },
+
+      getIsDrawing: function(){
+        return isDrawing;
+      },
+
+      getShape: function(){
+        return shape;
+      },
+
+      // returns random color
       randColor: function(){
         return '#'+Math.floor(Math.random()*16777215).toString(16);
+      },
+      strokeColor: function(){
+        return document.getElementById('strokeColor').value;
+
+      },
+      fillColor: function(){
+        return document.getElementById('fillColor').value;
+
       },
     // sets shape to be drawn
     setShape(shp){
@@ -43,8 +73,14 @@ var draw = (function() {
 
     //Set the x,y coords based on current event data
     setXY: function(evt) {
+        //Set previous coords
+        lx = x;;
+        ly = y;
+
       x = (evt.clientX - rect.left) - canvas.offsetLeft;
       y = (evt.clientY - rect.top) - canvas.offsetTop;
+
+    //  console.log({'x': x, 'y': y, 'lx': lx, 'ly': ly});
     },
 
     //Write the x,y coods to the target div
@@ -68,8 +104,8 @@ var draw = (function() {
     //Draw a rectangle
     drawRect: function() {
       //Start by using random fill colors.
-      ctx.fillStyle = this.randColor();
-      ctx.strokeStyle = this.randColor();
+      ctx.fillStyle = this.fillColor();
+      ctx.strokeStyle = this.strokeColor();
 
 
       ctx.fillRect (x1,y1,(x2-x1),(y2-y1));
@@ -78,7 +114,7 @@ var draw = (function() {
 
     drawLine: function () {
 
-      ctx.strokeStyle = this.randColor();
+      ctx.strokeStyle = this.strokeColor();
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
@@ -87,8 +123,8 @@ var draw = (function() {
 
     drawCircle: function() {
 
-      ctx.fillStyle = this.randColor();
-      ctx.strokeStyle = this.randColor();
+      ctx.fillStyle = this.fillColor();
+      ctx.strokeStyle = this.strokeColor();
 
      //calculate the radius using
       let a = (x1-x2)
@@ -101,18 +137,48 @@ var draw = (function() {
       ctx.fill();
     },
 
+    drawPath: function(){
+    //ctx.strokeStyle = this.randColor();
+    ctx.strokeStyle = this.strokeColor();
+     ctx.beginPath();
+     ctx.moveTo(lx,ly);
+     ctx.lineTo(x,y);
+     ctx.stroke();
+
+   },
+
+   drawTriangle: function(){
+         ctx.strokeStyle = this.strokeColor();
+         ctx.fillStyle = this.fillColor();
+         ctx.beginPath();
+         ctx.moveTo(x1, y1);
+         ctx.lineTo(x2, y2);
+         ctx.lineTo(y1, y2);
+         ctx.fill();
+         ctx.stroke();
+
+
+   },
+
+   //draws slected shape
     draw: function() {
 
     ctx.restore();
     if(shape ==='rectangle')
-  {
+    {
     this.drawRect();
-  }else if(shape ==='line')
+    } else if(shape ==='line')
     {
       this.drawLine();
-    }else if(shape ==='circle')
-      {
+    } else if(shape ==='circle')
+    {
         this.drawCircle();
+    } else if (shape ==='path')
+    {
+      this.drawPath();
+    } else if (shape ==='triangle')
+      {
+        this.drawTriangle();
       } else {
     alert('Please choose a shape');
   }
@@ -151,27 +217,40 @@ document.getElementById('btnRect').addEventListener('click', function(){
  document.getElementById('btnCircle').addEventListener('click', function(){
    draw.setShape('circle');
  });
+ // choose to draw a Path
+ document.getElementById('btnPath').addEventListener('click', function(){
+    draw.setShape('path');
+});
 
-
+// choose to draw a Triangle
+document.getElementById('btnTriangle').addEventListener('click', function(){
+   draw.setShape('triangle');
+});
 //Add a mousemove listener to the canvas
 //When the mouse reports a change of position use the event data to
 //set and report the x,y position on the mouse.
 draw.getCanvas().addEventListener('mousemove', function(evt) {
   draw.setXY(evt);
   draw.writeXY();
+  if(draw.getShape()=='path' && draw.getIsDrawing()===true){
+    draw.draw();
+  }
 }, false);
 
 //Add a mousedown listener to the canvas
 //Set the starting position
 draw.getCanvas().addEventListener('mousedown', function() {
   draw.setStart();
+  draw.setIsDrawing(true);
 }, false);
 
 //Add a mouseup listener to the canvas
 //Set the end position and draw the rectangle
+//
 draw.getCanvas().addEventListener('mouseup', function() {
   draw.setEnd();
   draw.draw();
+  draw.setIsDrawing(false);
 }, false);
 
 
