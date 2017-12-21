@@ -69,7 +69,11 @@ var draw = (function() {
     drawRect: function() {
       //Start by using random fill colors.
       ctx.fillStyle = this.randColor();
+      ctx.strokeStyle = this.randColor();
+
+
       ctx.fillRect (x1,y1,(x2-x1),(y2-y1));
+      ctx.strokeRect (x1,y1,(x2-x1),(y2-y1));
     },
 
     drawLine: function () {
@@ -84,13 +88,14 @@ var draw = (function() {
     drawCircle: function() {
 
       ctx.fillStyle = this.randColor();
+      ctx.strokeStyle = this.randColor();
 
+     //calculate the radius using
       let a = (x1-x2)
       let b = (y1-y2)
       let radius = Math.sqrt( a*a + b*b);
 
       ctx.beginPath();
-
       ctx.arc(x1, y1, radius, 0, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
