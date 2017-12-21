@@ -34,6 +34,7 @@ var draw = (function() {
     // sets shape to be drawn
     setShape(shp){
       shape = shp;
+
     },
 
 
@@ -67,13 +68,29 @@ var draw = (function() {
       ctx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
       ctx.fillRect (x1,y1,(x2-x1),(y2-y1));
     },
+
+    drawLine: function () {
+
+      ctx.strokeStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    },
+
     draw: function() {
-  if(shape ==='rectangle')
+
+    ctx.restore();
+    if(shape ==='rectangle')
   {
     this.drawRect();
-  } else {
+  }else if(shape ==='line')
+    {
+      this.drawLine();
+    } else {
     alert('Please choose a shape');
   }
+  ctx.save();
 },
     getCanvas: function(){
       return canvas;
@@ -92,6 +109,18 @@ var draw = (function() {
 
 //Initialize draw
 draw.init();
+
+// choose to draw a Rectangle
+document.getElementById('btnRect').addEventListener('click', function(){
+  draw.setShape('rectangle');
+});
+
+
+ // choose to draw a line
+ document.getElementById('btnLine').addEventListener('click', function(){
+   draw.setShape('line');
+ });
+
 
 //Add a mousemove listener to the canvas
 //When the mouse reports a change of position use the event data to
